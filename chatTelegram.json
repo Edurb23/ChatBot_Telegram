@@ -1,0 +1,247 @@
+[
+    {
+        "id": "8d74e4967008477f",
+        "type": "tab",
+        "label": "Chat_bot_telegram",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "5482877a9f63ba31",
+        "type": "debug",
+        "z": "8d74e4967008477f",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "Entrada no Telegram",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 470,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "b545e33bfb4b4e96",
+        "type": "debug",
+        "z": "8d74e4967008477f",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "Resposta para o telegram",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 810,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "da966a48b847b2fa",
+        "type": "telegram receiver",
+        "z": "8d74e4967008477f",
+        "name": "",
+        "bot": "bc656b16de333390",
+        "saveDataDir": "",
+        "filterCommands": false,
+        "x": 90,
+        "y": 240,
+        "wires": [
+            [
+                "5482877a9f63ba31",
+                "a45c4f9251e9f9be"
+            ],
+            [
+                "dd8952539e6a1988"
+            ]
+        ]
+    },
+    {
+        "id": "1f01a59be93ccf9a",
+        "type": "telegram sender",
+        "z": "8d74e4967008477f",
+        "name": "",
+        "bot": "bc656b16de333390",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 1090,
+        "y": 300,
+        "wires": [
+            [
+                "c9e1b831e6bf5546"
+            ]
+        ]
+    },
+    {
+        "id": "9f7d4ff27bd226d4",
+        "type": "watson-assistant-v2",
+        "z": "8d74e4967008477f",
+        "name": "",
+        "service-endpoint": "https://api.au-syd.assistant.watson.cloud.ibm.com/instances/c7d59b9f-2a19-49a3-b36d-e8fd8aa3cf88",
+        "assistant_id": "30390582-5a65-46a4-8be4-822b10e62c72",
+        "debug": false,
+        "restart": false,
+        "return_context": true,
+        "alternate_intents": false,
+        "multisession": true,
+        "timeout": "",
+        "optout-learning": false,
+        "persist-session-id": false,
+        "x": 610,
+        "y": 300,
+        "wires": [
+            [
+                "b545e33bfb4b4e96",
+                "230fbb19846d9af9"
+            ]
+        ]
+    },
+    {
+        "id": "a45c4f9251e9f9be",
+        "type": "change",
+        "z": "8d74e4967008477f",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "param.session_id",
+                "pt": "msg",
+                "to": "payload.chatId",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "chatId",
+                "pt": "msg",
+                "to": "payload.chatId",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.content",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 380,
+        "y": 280,
+        "wires": [
+            [
+                "9f7d4ff27bd226d4"
+            ]
+        ]
+    },
+    {
+        "id": "c9e1b831e6bf5546",
+        "type": "debug",
+        "z": "8d74e4967008477f",
+        "name": "Retorno",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1140,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "230fbb19846d9af9",
+        "type": "change",
+        "z": "8d74e4967008477f",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload.chatId",
+                "pt": "msg",
+                "to": "chatId",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "message",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "payload.content",
+                "pt": "msg",
+                "to": "payload.output.generic(0).text",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 860,
+        "y": 300,
+        "wires": [
+            [
+                "1f01a59be93ccf9a"
+            ]
+        ]
+    },
+    {
+        "id": "dd8952539e6a1988",
+        "type": "function",
+        "z": "8d74e4967008477f",
+        "name": "Accesso não autorizado",
+        "func": "msg.payload.content = \"Voce não é um usuário autorizado\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 670,
+        "y": 520,
+        "wires": [
+            [
+                "1f01a59be93ccf9a"
+            ]
+        ]
+    },
+    {
+        "id": "bc656b16de333390",
+        "type": "telegram bot",
+        "botname": "@LaboratorioHealthBot",
+        "usernames": "",
+        "chatids": "",
+        "baseapiurl": "",
+        "updatemode": "polling",
+        "pollinterval": "300",
+        "usesocks": false,
+        "sockshost": "",
+        "socksprotocol": "socks5",
+        "socksport": "6667",
+        "socksusername": "anonymous",
+        "sockspassword": "",
+        "bothost": "",
+        "botpath": "",
+        "localbotport": "8443",
+        "publicbotport": "8443",
+        "privatekey": "",
+        "certificate": "",
+        "useselfsignedcertificate": false,
+        "sslterminated": false,
+        "verboselogging": false
+    }
+]
